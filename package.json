@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:mock": "concurrently -n \"mock,vite\" -c \"cyan,magenta\" \"pnpm mock-server\" \"cross-env VITE_GRPC_BASE_URL=http://localhost:50051 pnpm dev\"",
+    "dev:mock": "concurrently -n \"mock,vite\" -c \"cyan,magenta\" \"pnpm mock-server\" \"cross-env VITE_GRPC_BASE_URL=http://localhost:50052 pnpm dev\"",
+    "dev:prod": "cross-env VITE_GRPC_BASE_URL=http://localhost:50051 vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",

@@ -222,7 +222,7 @@ export const BASE_URL =
   (typeof window !== "undefined" &&
     (window as unknown as { __SAPPHILLON_GRPC_BASE__?: string })
       .__SAPPHILLON_GRPC_BASE__) ||
-  "http://localhost:50051";
+  "http://localhost:50052";
 
 // Toggle grpc-web binary/json via env (defaults to binary)
 const BIN_ENV = (
