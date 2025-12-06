@@ -19,7 +19,6 @@ function App() {
         <Route path="/generate" element={<GeneratePage />} />
         <Route path="/workflows" element={<WorkflowsPage />} />
         <Route path="/workflows/:id" element={<WorkflowRunPage />} />
-        {/* <Route path="/workflows/:id/run" element={<WorkflowRunPage />} /> */}
         <Route path="/workflows-parser-test" element={<WorkflowParserTest />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/fix" element={<PageBox title="Fix" />} />
