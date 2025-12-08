@@ -11,13 +11,7 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import {
-  LuClock,
-  LuSearch,
-  LuStar,
-  LuTrash2,
-  LuX,
-} from "react-icons/lu";
+import { LuClock, LuSearch, LuStar, LuTrash2, LuX } from "react-icons/lu";
 import type { PromptHistoryItem } from "@/hooks/usePromptHistory";
 import { EmptyState } from "@/components/ui/empty-state";
 import { useI18n } from "@/hooks/useI18n";
@@ -86,7 +80,9 @@ function HistoryItem({
           </HStack>
           <HStack gap={1}>
             <IconButton
-              aria-label={item.starred ? t("history.removeFromFavorites") : t("history.addToFavorites")}
+              aria-label={item.starred
+                ? t("history.removeFromFavorites")
+                : t("history.addToFavorites")}
               size="xs"
               variant="ghost"
               onClick={(e) => {
@@ -154,7 +150,7 @@ export function PromptHistoryDialog({
       onSelectPrompt(prompt);
       onClose();
     },
-    [onSelectPrompt, onClose]
+    [onSelectPrompt, onClose],
   );
 
   return (
@@ -165,11 +161,10 @@ export function PromptHistoryDialog({
       modal={true}
     >
       <Dialog.Backdrop />
-      <Dialog.Positioner zIndex={1400}>
+      <Dialog.Positioner>
         <Dialog.Content
           maxW={{ base: "100vw", md: "600px" }}
           maxH={{ base: "100vh", md: "80vh" }}
-          zIndex={1401}
         >
           <Dialog.Header>
             <HStack justify="space-between" w="full">
@@ -260,37 +255,35 @@ export function PromptHistoryDialog({
 
             {/* 履歴リスト */}
             <Box flex="1" overflowY="auto" p={4}>
-              {filteredHistory.length === 0 ? (
-                <EmptyState
-                  icon={<LuClock />}
-                  title={
-                    searchQuery
+              {filteredHistory.length === 0
+                ? (
+                  <EmptyState
+                    icon={<LuClock />}
+                    title={searchQuery
                       ? t("history.noSearchResults")
                       : activeTab === "starred"
                       ? t("history.noStarred")
-                      : t("history.noHistory")
-                  }
-                  description={
-                    searchQuery
+                      : t("history.noHistory")}
+                    description={searchQuery
                       ? t("history.noSearchResultsDescription")
                       : activeTab === "starred"
                       ? t("history.noStarredDescription")
-                      : t("history.noHistoryDescription")
-                  }
-                />
-              ) : (
-                <VStack align="stretch" gap={2}>
-                  {filteredHistory.map((item) => (
-                    <HistoryItem
-                      key={item.id}
-                      item={item}
-                      onSelect={() => handleSelect(item.prompt)}
-                      onRemove={() => onRemove(item.id)}
-                      onToggleStar={() => onToggleStar(item.id)}
-                    />
-                  ))}
-                </VStack>
-              )}
+                      : t("history.noHistoryDescription")}
+                  />
+                )
+                : (
+                  <VStack align="stretch" gap={2}>
+                    {filteredHistory.map((item) => (
+                      <HistoryItem
+                        key={item.id}
+                        item={item}
+                        onSelect={() => handleSelect(item.prompt)}
+                        onRemove={() => onRemove(item.id)}
+                        onToggleStar={() => onToggleStar(item.id)}
+                      />
+                    ))}
+                  </VStack>
+                )}
             </Box>
 
             {/* フッター */}
@@ -317,5 +310,3 @@ export function PromptHistoryDialog({
     </Dialog.Root>
   );
 }
-
-
