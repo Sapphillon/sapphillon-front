@@ -7,7 +7,10 @@
 import React from "react";
 import { clients } from "@/lib/grpc-clients";
 import type { RunWorkflowResponse } from "@/gen/sapphillon/v1/workflow_service_pb";
-import { WorkflowSourceByIdSchema } from "@/gen/sapphillon/v1/workflow_service_pb";
+import {
+  WorkflowSourceByIdSchema,
+  type WorkflowSourceById,
+} from "@/gen/sapphillon/v1/workflow_service_pb";
 import type { Workflow } from "@/gen/sapphillon/v1/workflow_pb";
 import { create } from "@bufbuild/protobuf";
 
@@ -69,7 +72,7 @@ export function useWorkflowRun(): UseWorkflowRunReturn {
           byId: create(WorkflowSourceByIdSchema, {
             workflowId,
             workflowCodeId: workflowCodeId || "",
-          }),
+          }) as WorkflowSourceById,
         });
         setRunRes(res);
         append({ kind: "message", payload: res });
@@ -95,7 +98,10 @@ export function useWorkflowRun(): UseWorkflowRunReturn {
       setRunRes(null);
       setRunning(true);
       try {
-        append({ kind: "message", payload: { stage: "save", status: "start" } });
+        append({
+          kind: "message",
+          payload: { stage: "save", status: "start" },
+        });
 
         // ワークフローを保存
         const saveResponse = await clients.workflow.updateWorkflow({
@@ -122,7 +128,7 @@ export function useWorkflowRun(): UseWorkflowRunReturn {
           byId: create(WorkflowSourceByIdSchema, {
             workflowId,
             workflowCodeId,
-          }),
+          }) as WorkflowSourceById,
         });
 
         setRunRes(res);

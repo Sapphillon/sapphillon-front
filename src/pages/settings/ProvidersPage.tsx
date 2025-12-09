@@ -54,11 +54,12 @@ export function ProvidersPage() {
     const [isCreating, setIsCreating] = React.useState(false);
 
     // バリデーションスキーマ
-    const providerFormSchema = React.useMemo(() => z.object({
-        displayName: z.string().min(1, t("providers.displayNameRequired")),
-        apiKey: z.string().min(1, t("providers.apiKeyRequired")),
-        apiEndpoint: z.string().url(t("providers.apiEndpointInvalid")),
-    }), [t]);
+    const providerFormSchema = React.useMemo(() =>
+        z.object({
+            displayName: z.string().min(1, t("providers.displayNameRequired")),
+            apiKey: z.string().min(1, t("providers.apiKeyRequired")),
+            apiEndpoint: z.string().url(t("providers.apiEndpointInvalid")),
+        }), [t]);
 
     const {
         register,
@@ -97,7 +98,7 @@ export function ProvidersPage() {
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [t]);
 
     React.useEffect(() => {
         fetchProviders();
@@ -318,7 +319,9 @@ export function ProvidersPage() {
                                 <EmptyState
                                     icon={<LuServer />}
                                     title={t("providers.emptyTitle")}
-                                    description={t("providers.emptyDescription")}
+                                    description={t(
+                                        "providers.emptyDescription",
+                                    )}
                                     action={{
                                         label: t("providers.emptyAction"),
                                         onClick: startCreate,
@@ -399,7 +402,9 @@ export function ProvidersPage() {
                                                             ? (
                                                                 <>
                                                                     <IconButton
-                                                                        aria-label={t("providers.save")}
+                                                                        aria-label={t(
+                                                                            "providers.save",
+                                                                        )}
                                                                         size="sm"
                                                                         colorPalette="green"
                                                                         onClick={handleSubmitEdit(
@@ -416,7 +421,9 @@ export function ProvidersPage() {
                                                                         <LuCheck />
                                                                     </IconButton>
                                                                     <IconButton
-                                                                        aria-label={t("providers.cancel")}
+                                                                        aria-label={t(
+                                                                            "providers.cancel",
+                                                                        )}
                                                                         size="sm"
                                                                         variant="ghost"
                                                                         onClick={() => {
@@ -433,7 +440,9 @@ export function ProvidersPage() {
                                                             : (
                                                                 <>
                                                                     <IconButton
-                                                                        aria-label={t("providers.edit")}
+                                                                        aria-label={t(
+                                                                            "providers.edit",
+                                                                        )}
                                                                         size="sm"
                                                                         variant="ghost"
                                                                         onClick={() =>
@@ -444,7 +453,9 @@ export function ProvidersPage() {
                                                                         <LuPencil />
                                                                     </IconButton>
                                                                     <IconButton
-                                                                        aria-label={t("providers.delete")}
+                                                                        aria-label={t(
+                                                                            "providers.delete",
+                                                                        )}
                                                                         size="sm"
                                                                         variant="ghost"
                                                                         colorPalette="red"
