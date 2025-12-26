@@ -1,9 +1,49 @@
-use actix_web::{App, HttpServer, middleware::Logger};
+use actix_web::{App, HttpResponse, HttpServer, get, middleware::Logger};
 use actix_web_static_files::ResourceFiles;
 use log::{error, info};
 use std::env;
 
 include!(concat!(env!("OUT_DIR"), "/generated.rs"));
+
+#[get("/")]
+async fn index() -> HttpResponse {
+    serve_index().await
+}
+
+#[get("/index.html")]
+async fn index_html() -> HttpResponse {
+    serve_index().await
+}
+
+async fn serve_index() -> HttpResponse {
+    let generated = generate();
+    let index_file = match generated.get("index.html") {
+        Some(file) => file,
+        None => return HttpResponse::NotFound().finish(),
+    };
+
+    let mut html = String::from_utf8_lossy(index_file.data).into_owned();
+
+    // Inject backend URL if environment variable is set
+    if let Ok(url) = env::var("SAPPHILLON_GRPC_BASE_URL") {
+        let script = format!(
+            r#"<script>window.__SAPPHILLON_GRPC_BASE__ = "{}";</script>"#,
+            url
+        );
+        // Inject before </head> or <body>
+        if let Some(pos) = html.find("</head>") {
+            html.insert_str(pos, &script);
+        } else if let Some(pos) = html.find("<body>") {
+            html.insert_str(pos + 6, &script);
+        } else {
+            html.insert_str(0, &script);
+        }
+    }
+
+    HttpResponse::Ok()
+        .content_type("text/html; charset=utf-8")
+        .body(html)
+}
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -20,6 +60,8 @@ async fn main() -> std::io::Result<()> {
         let generated = generate();
         App::new()
             .wrap(Logger::default())
+            .service(index)
+            .service(index_html)
             .service(ResourceFiles::new("/", generated))
     })
     .bind(&listen)
