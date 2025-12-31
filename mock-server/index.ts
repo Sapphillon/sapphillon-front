@@ -12,7 +12,8 @@ import { workflowHandler } from "./handlers/workflow-handler";
 import { pluginHandler } from "./handlers/plugin-handler";
 import { initializeMockData } from "./data/mock-data";
 
-const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 50052;
+// モックサーバーはデフォルトでポート50099を使用（本番50051との混同を避けるため）
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 50099;
 const HOST = process.env.HOST || "localhost";
 
 // モックデータを初期化

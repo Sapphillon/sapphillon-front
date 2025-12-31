@@ -205,29 +205,38 @@ export function isRetryableError(error: ConnectError): boolean {
   ].includes(error.code);
 }
 
-interface EnvLike {
-  [k: string]: unknown;
-}
-interface ImportMetaLike {
-  env?: EnvLike;
-}
-const im = import.meta as unknown as ImportMetaLike;
+// Vite環境変数の取得
+const getEnvVar = (key: string): string | undefined => {
+  try {
+    // Vite の import.meta.env から取得
+    const env = (import.meta as unknown as { env?: Record<string, unknown> })
+      .env;
+    return env?.[key] as string | undefined;
+  } catch {
+    return undefined;
+  }
+};
 
 // Resolve base URL in order of preference:
 // 1) VITE_GRPC_BASE_URL (e.g. http://localhost:50051)
 // 2) window.__SAPPHILLON_GRPC_BASE__ (debug hook)
 // 3) fallback http://localhost:50051
-export const BASE_URL =
-  (im.env?.VITE_GRPC_BASE_URL as string | undefined) ||
-  (typeof window !== "undefined" &&
-    (window as unknown as { __SAPPHILLON_GRPC_BASE__?: string })
-      .__SAPPHILLON_GRPC_BASE__) ||
-  "http://localhost:50051";
+const envBaseUrl = getEnvVar("VITE_GRPC_BASE_URL");
+const windowBaseUrl =
+  typeof window !== "undefined"
+    ? (window as unknown as { __SAPPHILLON_GRPC_BASE__?: string })
+        .__SAPPHILLON_GRPC_BASE__
+    : undefined;
+
+export const BASE_URL = envBaseUrl || windowBaseUrl || "http://localhost:50051";
+
+// デバッグ用: 実際に使用されるBASE_URLをコンソールに出力
+if (typeof window !== "undefined") {
+  console.debug("[gRPC] BASE_URL:", BASE_URL, { envBaseUrl, windowBaseUrl });
+}
 
 // Toggle grpc-web binary/json via env (defaults to binary)
-const BIN_ENV = (
-  im.env?.VITE_GRPC_WEB_USE_BINARY as string | undefined
-)?.toLowerCase?.();
+const BIN_ENV = getEnvVar("VITE_GRPC_WEB_USE_BINARY")?.toLowerCase?.();
 const USE_BINARY = BIN_ENV
   ? !(BIN_ENV === "false" || BIN_ENV === "0" || BIN_ENV === "no")
   : true;
